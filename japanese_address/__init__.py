@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import logging
 
 from pkg_resources import resource_stream
 
@@ -6,6 +7,9 @@ from parsel import Selector
 
 
 __version__ = '0.1.1'
+
+
+logger = logging.getLogger(__name__)
 
 
 PREFECTURES_DATA = dict([l.decode('utf8').split() for l in resource_stream('japanese_address', 'data/prefs.dat')])
@@ -22,7 +26,7 @@ def load_wiki(datafile, endchar):
 
 CITIES_DATA = dict(load_wiki('data/cities.html', "市"))
 WARDS_DATA = dict(load_wiki('data/wards.html', "区"))
-TOWNS_DATA = dict(load_wiki('data/towns.html', "区"))
+TOWNS_DATA = dict(load_wiki('data/towns.html', "町"))
 
 
 def _parse_prefecture(txt):
@@ -78,8 +82,11 @@ def parse(txt):
         parsed['ward_eng'] = WARDS_DATA[parsed['ward']]
     _parse_level('district', "郡", parsed)
     _parse_level('town', "町", parsed)
-    if 'town' in parsed and parsed['town'] in TOWNS_DATA:
-        parsed['town_eng'] = TOWNS_DATA[parsed['town']]
+    if 'town' in parsed:
+        if parsed['town'] in TOWNS_DATA:
+            parsed['town_eng'] = TOWNS_DATA[parsed['town']]
+        else:
+            logger.warning(f"Town {parsed['town']} not in database")
     _parse_level('city_district', "丁目", parsed)
 
     return parsed
