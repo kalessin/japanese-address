@@ -5,7 +5,7 @@ from pkg_resources import resource_stream
 from parsel import Selector
 
 
-__version__ = '0.1'
+__version__ = '0.1.1'
 
 
 PREFECTURES_DATA = dict([l.decode('utf8').split() for l in resource_stream('japanese_address', 'data/prefs.dat')])
