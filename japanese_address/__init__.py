@@ -78,7 +78,7 @@ def parse(txt):
         parsed['ward_eng'] = WARDS_DATA[parsed['ward']]
     _parse_level('district', "郡", parsed)
     _parse_level('town', "町", parsed)
-    if 'town' in parsed:
+    if 'town' in parsed and parsed['town'] in TOWNS_DATA:
         parsed['town_eng'] = TOWNS_DATA[parsed['town']]
     _parse_level('city_district', "丁目", parsed)
 
