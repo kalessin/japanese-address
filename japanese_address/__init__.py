@@ -19,9 +19,11 @@ JAPANESE_PREFECTURES = list(PREFECTURES_DATA.keys())
 def load_wiki(datafile, endchar):
     sel = Selector(text=resource_stream('japanese_address', datafile).read().decode('utf8'))
     for trow in sel.xpath('//tr'):
-        texts = trow.xpath('.//td//text()').extract()[:2]
-        if len(texts) == 2 and texts[1].endswith(endchar):
-            yield texts[::-1]
+        japtext = trow.xpath('.//*[@lang="ja"]/text()').extract()
+        if japtext and japtext[0].endswith(endchar):
+            engtext = trow.xpath('.//*[@lang="ja"]/ancestor::td/preceding-sibling::td//text()').extract()[-1]
+            if engtext:
+                yield japtext[0], engtext
 
 
 CITIES_DATA = dict(load_wiki('data/cities.html', "市"))
