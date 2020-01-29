@@ -1,10 +1,8 @@
 # -*- coding: utf-8 -*-
 import logging
 
-from pkg_resources import resource_stream
-
 from parsel import Selector
-
+from pkg_resources import resource_stream
 
 __version__ = '0.1.2'
 
@@ -23,19 +21,20 @@ KANJI = {
 }
 
 
-def load_wiki(datafile, endchar):
+def load_wiki(datafile, column, endchar):
     sel = Selector(text=resource_stream('japanese_address', datafile).read().decode('utf8'))
-    for trow in sel.xpath('//tr'):
+    rows = sel.xpath(f'//th[contains(.,"{column}")]/ancestor::table//tr[not(th)]')
+    for trow in rows:
         japtext = trow.xpath('.//*[@lang="ja"]/text()').extract()
         if japtext and japtext[0].endswith(endchar):
-            engtext = trow.xpath('.//*[@lang="ja"]/ancestor::td/preceding-sibling::td//text()').extract()[-1]
+            engtext = trow.xpath('.//*[@lang="ja"]/ancestor::td/preceding-sibling::td//text()').get()
             if engtext:
                 yield japtext[0], engtext
 
 
-TOWNS_DATA = dict(load_wiki('data/towns.html', KANJI["town"]))
-CITIES_DATA = dict(load_wiki('data/cities.html', KANJI["city"]))
-WARDS_DATA = dict(load_wiki('data/wards.html', KANJI["ward"]))
+TOWNS_DATA = dict(load_wiki('data/towns.html', 'Town', KANJI["town"]))
+CITIES_DATA = dict(load_wiki('data/cities.html', 'City', KANJI["city"]))
+WARDS_DATA = dict(load_wiki('data/wards.html', 'Ward', KANJI["ward"]))
 
 
 def _parse_prefecture(txt):
