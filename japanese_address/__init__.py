@@ -14,6 +14,13 @@ logger = logging.getLogger(__name__)
 
 PREFECTURES_DATA = dict([l.decode('utf8').split() for l in resource_stream('japanese_address', 'data/prefs.dat')])
 JAPANESE_PREFECTURES = list(PREFECTURES_DATA.keys())
+KANJI = {
+    "city": "市",
+    "ward": "区",
+    "district": "郡",
+    "town": "町",
+    "city_district": "丁目",
+}
 
 
 def load_wiki(datafile, endchar):
@@ -26,9 +33,9 @@ def load_wiki(datafile, endchar):
                 yield japtext[0], engtext
 
 
-CITIES_DATA = dict(load_wiki('data/cities.html', "市"))
-WARDS_DATA = dict(load_wiki('data/wards.html', "区"))
-TOWNS_DATA = dict(load_wiki('data/towns.html', "町"))
+TOWNS_DATA = dict(load_wiki('data/towns.html', KANJI["town"]))
+CITIES_DATA = dict(load_wiki('data/cities.html', KANJI["city"]))
+WARDS_DATA = dict(load_wiki('data/wards.html', KANJI["ward"]))
 
 
 def _parse_prefecture(txt):
@@ -76,19 +83,19 @@ def parse(txt):
     else:
         parsed['unparsed_right'] = txt
 
-    _parse_level('city', "市", parsed)
+    _parse_level('city', KANJI["city"], parsed)
     if 'city' in parsed:
         parsed['city_eng'] = CITIES_DATA[parsed['city']]
-    _parse_level('ward', "区", parsed)
+    _parse_level('ward', KANJI["ward"], parsed)
     if 'ward' in parsed:
         parsed['ward_eng'] = WARDS_DATA[parsed['ward']]
-    _parse_level('district', "郡", parsed)
-    _parse_level('town', "町", parsed)
+    _parse_level('district', KANJI["district"], parsed)
+    _parse_level('town', KANJI["town"], parsed)
     if 'town' in parsed:
         if parsed['town'] in TOWNS_DATA:
             parsed['town_eng'] = TOWNS_DATA[parsed['town']]
         else:
             logger.warning(f"Town {parsed['town']} not in database")
-    _parse_level('city_district', "丁目", parsed)
+    _parse_level('city_district', KANJI["city_district"], parsed)
 
     return parsed
