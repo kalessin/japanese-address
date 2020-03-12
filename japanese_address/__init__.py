@@ -5,7 +5,7 @@ import re
 from parsel import Selector
 from pkg_resources import resource_stream
 
-__version__ = '0.1.2'
+__version__ = '0.1.2.2'
 
 
 logger = logging.getLogger(__name__)
