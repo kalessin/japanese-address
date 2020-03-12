@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import logging
+import re
 
 from parsel import Selector
 from pkg_resources import resource_stream
@@ -45,9 +46,12 @@ def _parse_prefecture(txt):
 
 
 def _parse_divisor(txt, divisor, dlen):
-    start = txt.find(divisor)
-    if start >= 0:
-        return txt[0:start+dlen].strip()
+    # search for the divisor, skiping the first one (eg. 市川市  => Ichikawa)
+    # until the last ocurrence of the divisor (eg. 野々市市 => Nonoichi)
+    match = re.search(f'^.+?{divisor}+', txt)
+    if match:
+        # return the municipality name, without the divisor
+        return match.group()
 
 
 def _parse_level(div, kanji, parsed):
