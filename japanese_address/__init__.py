@@ -42,7 +42,7 @@ def _parse_prefecture(txt):
     for pref in JAPANESE_PREFECTURES:
         start = txt.find(pref)
         if start >= 0:
-            return txt[start:len(pref)].strip()
+            return txt[start : start + len(pref)]
 
 
 def _parse_divisor(txt, divisor, dlen):
