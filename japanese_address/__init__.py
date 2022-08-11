@@ -42,7 +42,7 @@ def _parse_prefecture(txt):
     for pref in JAPANESE_PREFECTURES:
         start = txt.find(pref)
         if start >= 0:
-            return txt[start:len(pref)].strip()
+            return txt[start : start + len(pref)]
 
 
 def _parse_divisor(txt, divisor, dlen):
@@ -72,6 +72,7 @@ def parse(txt):
     """
     >>> parse('北海道 札幌市 中央区北5条西4-7')
     >>> parse('東京都江東区豊洲2丁目4-9')
+    >>> parse("〒600-8216 京都府京都市下京区烏丸通七条下ル 東塩小路町 721-1")
     """
     parsed = {}
     pref = _parse_prefecture(txt)
