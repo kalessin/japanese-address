@@ -71,8 +71,11 @@ def _parse_level(div, kanji, parsed):
 def parse(txt):
     """
     >>> parse('北海道 札幌市 中央区北5条西4-7')
+    {'prefecture': '北海道', 'prefecture_eng': 'Hokkaido', 'unparsed_right': '北5条西4-7', 'city': '札幌市', 'city_eng': 'Sapporo', 'ward': '中央区', 'ward_eng': 'Chūō'}
     >>> parse('東京都江東区豊洲2丁目4-9')
+    {'prefecture': '東京都', 'prefecture_eng': 'Tokyo', 'unparsed_right': '4-9', 'ward': '江東区', 'ward_eng': 'Kōtō', 'city_district': '豊洲2丁目'}
     >>> parse("〒600-8216 京都府京都市下京区烏丸通七条下ル 東塩小路町 721-1")
+    {'prefecture': '京都府', 'prefecture_eng': 'Kyoto', 'unparsed_left': '〒600-8216', 'unparsed_right': '721-1', 'city': '京都市', 'city_eng': 'Kyoto', 'ward': '下京区', 'ward_eng': 'Shimogyō', 'town': '烏丸通七条下ル 東塩小路町'}
     """
     parsed = {}
     pref = _parse_prefecture(txt)
