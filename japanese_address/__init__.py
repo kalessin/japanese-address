@@ -2,7 +2,6 @@
 import logging
 import re
 
-from parsel import Selector
 from pkg_resources import resource_stream
 
 __version__ = '0.1.2.3'
@@ -22,20 +21,16 @@ KANJI = {
 }
 
 
-def load_wiki(datafile, column, endchar):
-    sel = Selector(text=resource_stream('japanese_address', datafile).read().decode('utf8'))
-    rows = sel.xpath(f'//th[contains(.,"{column}")]/ancestor::table//tr[not(th)]')
-    for trow in rows:
-        japtext = trow.xpath('.//*[@lang="ja"]/text()').extract()
-        if japtext and japtext[0].endswith(endchar):
-            engtext = trow.xpath('.//*[@lang="ja"]/ancestor::td/preceding-sibling::td//text()').get()
-            if engtext:
-                yield japtext[0], engtext
+def load_data(datafile):
+    with open(datafile, 'r') as data:
+        for row in data:
+            english_value, japanese_value = row.split(',')
+            yield {japanese_value: english_value}
 
 
-TOWNS_DATA = dict(load_wiki('data/towns.html', 'Town', KANJI["town"]))
-CITIES_DATA = dict(load_wiki('data/cities.html', 'City', KANJI["city"]))
-WARDS_DATA = dict(load_wiki('data/wards.html', 'Ward', KANJI["ward"]))
+CITIES_DATA = dict(load_data('data/cities'))
+TOWNS_DATA = dict(load_data('data/towns'))
+WARDS_DATA = dict(load_data('data/wards'))
 
 
 def _parse_prefecture(txt):
@@ -91,18 +86,22 @@ def parse(txt):
         parsed['unparsed_right'] = txt
 
     _parse_level('city', KANJI["city"], parsed)
-    if 'city' in parsed:
+    if 'city' in parsed and parsed['city'] in CITIES_DATA:
         parsed['city_eng'] = CITIES_DATA[parsed['city']]
+
     _parse_level('ward', KANJI["ward"], parsed)
     if 'ward' in parsed:
         parsed['ward_eng'] = WARDS_DATA[parsed['ward']]
+
     _parse_level('district', KANJI["district"], parsed)
+
     _parse_level('town', KANJI["town"], parsed)
     if 'town' in parsed:
         if parsed['town'] in TOWNS_DATA:
             parsed['town_eng'] = TOWNS_DATA[parsed['town']]
         else:
             logger.warning(f"Town {parsed['town']} not in database")
+
     _parse_level('city_district', KANJI["city_district"], parsed)
 
     return parsed
