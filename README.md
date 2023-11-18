@@ -40,6 +40,6 @@ To upgrade the data, use the following command:
 $ python dataloader.py
 ```
 
-If everything goes fine, the files `data/cities`, `data/towns` and `data/wards`
+If everything goes fine, the files `data/cities.py`, `data/towns.py` and `data/wards.py`
 will be updated with the latest content available at the mentioned pages. Commit
 them to the repository and create a new release.

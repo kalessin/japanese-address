@@ -1,3 +1,6 @@
+import datetime
+import json
+
 import requests
 from parsel import Selector
 
@@ -68,20 +71,43 @@ def load_wards(endchar):
 
 
 def generate_dataset():
-    with open("./data/cities", "w") as cities_file:
-        for japanese_name, english_name in load_cities(KANJI["city"]):
-            cities_file.write(",".join([japanese_name, english_name]))
-            cities_file.write("\n")
+    update_time = datetime.datetime.now()
 
-    with open("./data/towns", "w") as towns_file:
-        for japanese_name, english_name in load_towns(KANJI["town"]):
-            towns_file.write(",".join([japanese_name, english_name]))
-            towns_file.write("\n")
+    cities_data = {
+        japanese_name: english_name
+        for japanese_name, english_name in load_cities(KANJI["city"])
+    }
+    with open("./data/cities.py", "w") as cities_file:
+        cities_file.write(f"# Auto-generated file. Last updated: {update_time}\n")
+        cities_file.write(
+            "JAPANESE_CITIES = {}".format(
+                json.dumps(cities_data, ensure_ascii=False, indent=4)
+            )
+        )
 
-    with open("./data/wards", "w") as wards_file:
-        for japanese_name, english_name in load_wards(KANJI["ward"]):
-            wards_file.write(",".join([japanese_name, english_name]))
-            wards_file.write("\n")
+    towns_data = {
+        japanese_name: english_name
+        for japanese_name, english_name in load_towns(KANJI["town"])
+    }
+    with open("./data/towns.py", "w") as towns_file:
+        towns_file.write(f"# Auto-generated file. Last updated: {update_time}\n")
+        towns_file.write(
+            "JAPANESE_TOWNS = {}".format(
+                json.dumps(towns_data, ensure_ascii=False, indent=4)
+            )
+        )
+
+    wards_data = {
+        japanese_name: english_name
+        for japanese_name, english_name in load_wards(KANJI["ward"])
+    }
+    with open("./data/wards.py", "w") as wards_file:
+        wards_file.write(f"# Auto-generated file. Last updated: {update_time}\n")
+        wards_file.write(
+            "JAPANESE_WARDS = {}".format(
+                json.dumps(wards_data, ensure_ascii=False, indent=4)
+            )
+        )
 
 
 if __name__ == "__main__":
