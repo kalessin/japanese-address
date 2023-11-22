@@ -6,7 +6,7 @@ pip install japanese-address
 
 # Usage
 
-```bash
+```python
 > from japanese_address import parse
 > parse('北海道 札幌市 中央区北5条西4-7')
 {'prefecture': '北海道',
