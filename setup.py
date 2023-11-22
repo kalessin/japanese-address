@@ -3,7 +3,7 @@ from setuptools import setup, find_packages
 
 setup(
     name="japanese-address",
-    version="0.1.2.3",
+    version="0.2",
     description="Japanese address parser",
     long_description=open("README.md").read(),
     long_description_content_type="text/markdown",

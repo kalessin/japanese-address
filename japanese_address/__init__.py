@@ -9,7 +9,7 @@ from japanese_address.data import (
     JAPANESE_WARDS,
 )
 
-__version__ = "0.1.2.3"
+__version__ = "0.2"
 
 
 logger = logging.getLogger(__name__)
